@@ -12,7 +12,6 @@ var multer = require('multer');
 var upload = multer({dest: 'uploads/' });
 
 
-
 // configure app
 app.use(morgan('dev')); // log requests to the console
 
@@ -42,6 +41,12 @@ db.once('open', function () {
 
 var Bear     = require('./app/models/bear');
 var Case     = require('./app/models/case');
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // ROUTES FOR OUR API
 // =============================================================================
