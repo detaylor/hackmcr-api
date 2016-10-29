@@ -175,26 +175,53 @@ router.route('/bears/:bear_id')
     		});
     	})
 
+// Update case with image -------------------------------
 
   router.route('/cases/:reference/images')
 
     .post(upload.array('photos', 12), function(req, res, next) {
 
-      console.log(req.files, req.body)
-
       Case.findById(req.params.reference, function(err, aCase) {
         if (err)
           res.send(err);
 
+          if(req.files[0].fieldname) {
+              aCase.imageName = req.files[0].path;
+              aCase.added = Date.now();
+              console.log('setting case filename', req.files[0].path, aCase.added)
+          }
           aCase.save(function(err) {
             if (err)
               res.send(err);
-
-            res.json({ message: 'Case Updated with missing person image!' });
+              res.json({ message: 'Case Updated with missing person image!' });
           });
-
       });
     })
+
+
+  router.route('/searchbydate')
+
+  .post(function(req, res) {
+
+    var Case = require('mongoose').model('Case').schema
+    var currentDate = Date.now()
+    var requestedDate = req.body.date;
+
+    Case.findOne({"added": {"$gte": requestedDate, "$lt": currentDate}}, function (err, aCase) {
+        if (err) return handleError(err);
+        console.log(aCase) // Space Ghost is a talk show host.
+    })
+
+
+  });
+
+
+
+
+
+
+
+
 
 
 
