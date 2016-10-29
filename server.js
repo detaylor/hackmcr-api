@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 var port     = process.env.PORT || 8080; // set our port
 
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://ipsy:123456@ds139187.mlab.com:39187/hackispy')
+mongoose.connect('mongodb://admin:root@ds139187.mlab.com:39187/hackispy')
 
 var db = mongoose.connection;
 
