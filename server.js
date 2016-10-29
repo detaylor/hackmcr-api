@@ -32,6 +32,7 @@ db.once('open', function () {
 });
 
 var Bear     = require('./app/models/bear');
+var Case     = require('./app/models/case');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -123,6 +124,33 @@ router.route('/bears/:bear_id')
 			res.json({ message: 'Successfully deleted' });
 		});
 	});
+
+  router.route('/cases')
+    .post(function(req, res) {
+
+		  var personCase = new Case();		// create a new instance of the Bear model
+		  personCase.forename = req.body.forename;
+      personCase.surname = req.body.surname;
+      personCase.reference = req.body.reference;
+
+		  personCase.save(function(err) {
+			  if (err)
+				  res.send(err);
+
+			  res.json({ message: 'Case created!' });
+		  });
+
+
+	  })
+  	// get all the collections (accessed at GET http://localhost:8080/api/cases)
+  	.get(function(req, res) {
+  		Case.find(function(err, cases) {
+  			if (err)
+  				res.send(err);
+
+  			res.json(cases);
+  		});
+  	});
 
 
 // REGISTER OUR ROUTES -------------------------------
