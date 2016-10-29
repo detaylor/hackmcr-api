@@ -7,12 +7,21 @@ var bodyParser = require('body-parser');
 var app        = express();
 var morgan     = require('morgan');
 
+var multer = require('multer');
+
+var upload = multer({dest: 'uploads/' });
+
+
+
 // configure app
 app.use(morgan('dev')); // log requests to the console
 
 // configure body parser
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb'}));
+
+
 
 var port     = process.env.PORT || 8080; // set our port
 
@@ -125,7 +134,9 @@ router.route('/bears/:bear_id')
 		});
 	});
 
+
   router.route('/cases')
+
     .post(function(req, res) {
 
 		  var personCase = new Case();		// create a new instance of the Bear model
@@ -151,6 +162,41 @@ router.route('/bears/:bear_id')
   			res.json(cases);
   		});
   	});
+
+
+  router.route('/cases/:reference')
+
+    	// get the bear with that id
+    	.get(function(req, res) {
+    		Case.findById(req.params.reference, function(err, aCase) {
+    			if (err)
+    				res.send(err);
+    			res.json(aCase);
+    		});
+    	})
+
+
+  router.route('/cases/:reference/images')
+
+    .post(upload.array('photos', 12), function(req, res, next) {
+
+      console.log(req.files, req.body)
+
+      Case.findById(req.params.reference, function(err, aCase) {
+        if (err)
+          res.send(err);
+
+          aCase.save(function(err) {
+            if (err)
+              res.send(err);
+
+            res.json({ message: 'Case Updated with missing person image!' });
+          });
+
+      });
+    })
+
+
 
 
 // REGISTER OUR ROUTES -------------------------------
