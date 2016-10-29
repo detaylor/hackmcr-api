@@ -141,12 +141,16 @@ router.route('/bears/:bear_id')
 
   router.route('/cases')
 
+  //Create a case --------------------------------
+
     .post(function(req, res) {
 
 		  var personCase = new Case();		// create a new instance of the Bear model
 		  personCase.forename = req.body.forename;
       personCase.surname = req.body.surname;
       personCase.reference = req.body.reference;
+
+      console.log(personCase)
 
 		  personCase.save(function(err) {
 			  if (err)
@@ -157,7 +161,10 @@ router.route('/bears/:bear_id')
 
 
 	  })
-  	// get all the collections (accessed at GET http://localhost:8080/api/cases)
+
+
+  // get all cases  ----------------------------------
+
   	.get(function(req, res) {
   		Case.find(function(err, cases) {
   			if (err)
@@ -167,6 +174,7 @@ router.route('/bears/:bear_id')
   		});
   	});
 
+  // Get case with reference id -----------------------------------
 
   router.route('/cases/:reference')
 
@@ -179,7 +187,7 @@ router.route('/bears/:bear_id')
     		});
     	})
 
-// Update case with image -------------------------------
+// Update case reference with image -------------------------------
 
   router.route('/cases/:reference/images')
 
@@ -203,17 +211,22 @@ router.route('/bears/:bear_id')
     })
 
 
+  //POST A 'DATE' AS JSON AND YOU WILL GET ALL CASES AFTER THAT DATE
+
   router.route('/searchbydate')
 
   .post(function(req, res) {
 
-    var Case = require('mongoose').model('Case').schema
+    var Case = mongoose.model('Case').schema
     var currentDate = Date.now()
     var requestedDate = req.body.date;
 
-    Case.findOne({"added": {"$gte": requestedDate, "$lt": currentDate}}, function (err, aCase) {
+    console.log(requestedDate)
+
+     mongoose.model('Case').find({"added": {"$gte": requestedDate, "$lt": currentDate}}, function (err, aCase) {
         if (err) return handleError(err);
         console.log(aCase) // Space Ghost is a talk show host.
+        res.json({ cases: aCase });
     })
 
 
