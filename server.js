@@ -2,10 +2,13 @@
 // =============================================================================
 
 // call the packages we need
+var cors = require('cors');
 var express    = require('express');
 var bodyParser = require('body-parser');
 var app        = express();
+app.use(cors({credentials: true, origin: true}))
 var morgan     = require('morgan');
+
 
 var multer = require('multer');
 
@@ -42,11 +45,7 @@ db.once('open', function () {
 var Bear     = require('./app/models/bear');
 var Case     = require('./app/models/case');
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
 
 // ROUTES FOR OUR API
 // =============================================================================
