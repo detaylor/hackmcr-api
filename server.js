@@ -287,8 +287,8 @@ router.route('/bears/:bear_id')
                var image = {
                  path: 'https://sheltered-headland-81365.herokuapp.com/' + filePath,
                  dateAdded: new Date().getTime(),
-                 longitude: req.body.longitude,
-                 latitude: req.body.latitude
+                 lon: req.body.lon,
+                 lat: req.body.lat
                }
 
 
