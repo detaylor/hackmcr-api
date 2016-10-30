@@ -8,15 +8,28 @@ var bodyParser = require('body-parser');
 var app        = express();
 app.use(cors({credentials: true, origin: true}))
 var morgan     = require('morgan');
+var os = require('os');
+var path = require('path');
+var crypto = require('crypto');
 
+if(os.platform() == 'win32') {
+  path.join2 = path.join;
+  path.sep = '/';
+  path.join = function(){
+      var res = path.join2.apply({}, arguments);
+      res = res.replace(/\\/g, path.sep);
+      return res;
+  }
+}
 
 var multer = require('multer');
 
-var upload = multer({dest: 'uploads/' });
-var matchedUpload = multer({dest: 'uploads/matched' });
+var upload = multer({storage: createMulterStorage('public/uploads/') });
+var matchedUpload = multer({storage: createMulterStorage('public/uploads/matched') });
 
 
 // configure app
+app.use(express.static('public'));
 app.use(morgan('dev')); // log requests to the console
 
 // configure body parser
@@ -176,8 +189,6 @@ router.route('/bears/:bear_id')
 
 			  res.json({ message: 'Case created!' });
 		  });
-
-
 	  })
 
 
@@ -222,8 +233,9 @@ router.route('/bears/:bear_id')
             console.log('existing array', existingImages)
           }
 
+         var filePath = req.files[0].path.replace(/^public\//, '');
          var image = {
-           path: 'https://sheltered-headland-81365.herokuapp.com/' + req.files[0].path,
+           path: 'https://sheltered-headland-81365.herokuapp.com/' + filePath,
            dateAdded: new Date().getTime()
          }
 
@@ -267,8 +279,10 @@ router.route('/bears/:bear_id')
                   console.log('existing array', existingMatchedImages)
                 }
 
+               console.log(req.files[0]);
+               var filePath = req.files[0].path.replace(/^public\//, '');
                var image = {
-                 path: 'https://sheltered-headland-81365.herokuapp.com/' + req.files[0].path,
+                 path: 'https://sheltered-headland-81365.herokuapp.com/' + filePath,
                  dateAdded: new Date().getTime()
                }
 
@@ -306,17 +320,6 @@ router.route('/bears/:bear_id')
     })
   });
 
-
-
-
-
-
-
-
-
-
-
-
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
 
@@ -324,3 +327,15 @@ app.use('/api', router);
 // =============================================================================
 app.listen(port);
 console.log('Magic happens on port ' + port);
+
+function createMulterStorage(destinationPath) {
+  return multer.diskStorage({
+    destination: destinationPath,
+    filename: function (req, file, cb) {
+      crypto.pseudoRandomBytes(16, function (err, raw) {
+        if (err) return cb(err)
+        cb(null, raw.toString('hex') + path.extname(file.originalname))
+      });
+    }
+  });
+}
