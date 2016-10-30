@@ -146,10 +146,13 @@ router.route('/bears/:bear_id')
 
     .post(function(req, res) {
 
-		  var personCase = new Case();		// create a new instance of the Bear model
+		  var personCase = new Case();
+      console.log(req.body)		// create a new instance of the Bear model
 		  personCase.forename = req.body.forename;
       personCase.surname = req.body.surname;
       personCase.reference = req.body.reference;
+      personCase.imageName = '';
+      personCase.added = '';
 
       console.log(personCase)
 
@@ -162,6 +165,8 @@ router.route('/bears/:bear_id')
 
 
 	  })
+
+
 
 
   // get all cases  ----------------------------------
