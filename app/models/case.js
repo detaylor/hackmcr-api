@@ -17,7 +17,10 @@ var CaseSchema   = new Schema({
 	dateMissing: String,
 	recordCreated: String,
 	images: Array,
-	matchedImages: Array
+	matchedImages: Array,
+	reporteeForename: String,
+	reporteeSurname: String,
+	reporteeMobileNumber:String
 });
 
 

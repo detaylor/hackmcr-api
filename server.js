@@ -180,6 +180,9 @@ router.route('/bears/:bear_id')
       personCase.added = '';
       personCase.matchedImages = [];
       personCase.images = [];
+      personCase.reporteeForename = req.body.reporteeForename;
+    	personCase.reporteeSurname = req.body.reporteeSurname;
+    	personCase.reporteeMobileNumber = req.body.reporteeMobileNumber;
 
       console.log(personCase)
 
@@ -325,10 +328,17 @@ router.route('/bears/:bear_id')
   .post(function(req, res) {
 
     var mobile = req.body.mobileNumber; //'447123456789'
-    var textMessage = req.body.textMessage; //'we have found your daughter!'
+    var customText = req.body.textMessage; //'we have found your daughter!'
+    var forename = req.body.forename;
+    var surname = req.body.surname;
 
-    var clockwork = require('clockwork')({key:'8d5906557c66c9758a29440f32f6726bae4b818c'});
-    clockwork.sendSms({ To: mobile, Content: textMessage},
+    if(!customText){
+      customText = "We have had a confirmed sighting of Mr. " + surname;
+    }
+
+    console.log(customText)
+    var clockwork = require('clockwork')({key:'867bb2ee441f2b216557c61776897ef6f5ac907a'});
+    clockwork.sendSms({ To: mobile, Content: customText},
       function(error, resp) {
         if (error) {
             console.log('Something went wrong', error);
