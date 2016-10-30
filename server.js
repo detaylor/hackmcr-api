@@ -282,17 +282,20 @@ router.route('/bears/:bear_id')
                   console.log('existing array', existingMatchedImages)
                 }
 
-               console.log(req.files[0]);
+
                var filePath = req.files[0].path.replace(/^public\//, '');
                var image = {
                  path: 'https://sheltered-headland-81365.herokuapp.com/' + filePath,
-                 dateAdded: new Date().getTime()
+                 dateAdded: new Date().getTime(),
+                 longitude: req.body.longitude,
+                 latitude: req.body.latitude
                }
 
-               console.log(image);
+
+              console.log(image);
 
                existingMatchedImages.push(image);
-               console.log('updated array:  ', existingMatchedImages)
+               //console.log('updated array:  ', existingMatchedImages)
                aCase.matchedImages = existingMatchedImages;
 
               aCase.save(function(err) {
