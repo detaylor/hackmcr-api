@@ -145,11 +145,23 @@ router.route('/bears/:bear_id')
 
     .post(function(req, res) {
 
+
 		  var personCase = new Case();
-      console.log(req.body)		// create a new instance of the Bear model
+      console.log(req.body);		// create a new instance of the Bear model
 		  personCase.forename = req.body.forename;
       personCase.surname = req.body.surname;
       personCase.reference = req.body.reference;
+      personCase.gender = req.body.gender;
+      personCase.birthYear = req.body.birthYear;
+      personCase.status = req.body.status;
+      personCase.category = req.body.category;
+      personCase.accomodation = req.body.accomodation;
+      personCase.borough = req.body.borough;
+      personCase.area = req.body.area;
+      personCase.xCord = req.body.xCord;
+      personCase.yCord = req.body.yCord;
+      personCase.dateMissing = req.body.dateMissing;
+      personCase.recordCreated = req.body.recordCreated;
       personCase.imageName = '';
       personCase.added = '';
 
@@ -164,8 +176,6 @@ router.route('/bears/:bear_id')
 
 
 	  })
-
-
 
 
   // get all cases  ----------------------------------
@@ -203,7 +213,7 @@ router.route('/bears/:bear_id')
           res.send(err);
 
           if(req.files[0].fieldname) {
-              aCase.imageName = req.files[0].path;
+              aCase.imageName = 'https://sheltered-headland-81365.herokuapp.com/' + req.files[0].path;
               aCase.added = Date.now();
               console.log('setting case filename', req.files[0].path, aCase.added)
           }
