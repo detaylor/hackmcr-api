@@ -313,7 +313,7 @@ router.route('/bears/:bear_id')
 
     console.log(requestedDate)
 
-     mongoose.model('Case').find({"added": {"$gte": requestedDate, "$lt": currentDate}}, function (err, aCase) {
+     mongoose.model('Case').find({"images.dateAdded": {"$gte": requestedDate, "$lt": currentDate}}, function (err, aCase) {
         if (err) return handleError(err);
         console.log(aCase) // Space Ghost is a talk show host.
         res.json({ cases: aCase });
