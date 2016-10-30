@@ -320,6 +320,26 @@ router.route('/bears/:bear_id')
     })
   });
 
+
+  router.route('/textFamily')
+  .post(function(req, res) {
+
+    var mobile = req.body.mobileNumber; //'447123456789'
+    var textMessage = req.body.textMessage; //'we have found your daughter!'
+
+    var clockwork = require('clockwork')({key:'8d5906557c66c9758a29440f32f6726bae4b818c'});
+    clockwork.sendSms({ To: mobile, Content: textMessage},
+      function(error, resp) {
+        if (error) {
+            console.log('Something went wrong', error);
+        } else {
+            console.log('Message sent',resp.responses[0].id);
+            res.json({ delivery: 'Message sent' });
+        }
+    });
+
+  });
+
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
 
