@@ -166,6 +166,7 @@ router.route('/bears/:bear_id')
       personCase.imageName = '';
       personCase.added = '';
       personCase.matchedImages = [];
+      personCase.images = [];
 
       console.log(personCase)
 
@@ -208,24 +209,37 @@ router.route('/bears/:bear_id')
 
   router.route('/cases/:reference/images')
 
-    .post(upload.array('photos', 12), function(req, res, next) {
+  .post(upload.array('photos', 12), function(req, res, next) {
 
-      Case.findById(req.params.reference, function(err, aCase) {
-        if (err)
-          res.send(err);
+    Case.findById(req.params.reference, function(err, aCase) {
+      if (err)
+         res.send(err);
 
-          if(req.files[0].fieldname) {
-              aCase.imageName = 'https://sheltered-headland-81365.herokuapp.com/' + req.files[0].path;
-              aCase.added = Date.now();
-              console.log('setting case filename', req.files[0].path, aCase.added)
+         console.log(aCase)
+         var existingImages = [];
+          if(aCase.images){
+            existingImages = aCase.images;
+            console.log('existing array', existingImages)
           }
-          aCase.save(function(err) {
-            if (err)
-              res.send(err);
-              res.json({ message: 'Case Updated with missing person image!' });
-          });
-      });
-    })
+
+         var image = {
+           path: 'https://sheltered-headland-81365.herokuapp.com/' + req.files[0].path,
+           dateAdded: new Date().getTime()
+         }
+
+         console.log(image);
+
+         existingImages.push(image);
+         console.log('updated array:  ', existingImages)
+         aCase.images = existingImages;
+
+        aCase.save(function(err) {
+          if (err)
+            res.send(err);
+            res.json({ message: 'Case Updated with missing person image!' });
+        });
+    });
+  })
 
 
     // Update case reference with multiple matched Images -------------------------------

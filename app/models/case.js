@@ -16,8 +16,7 @@ var CaseSchema   = new Schema({
 	yCord: String,
 	dateMissing: String,
 	recordCreated: String,
-	imageName: String,
-	added: Date,
+	images: Array,
 	matchedImages: Array
 });
 
