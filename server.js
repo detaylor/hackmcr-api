@@ -13,6 +13,7 @@ var morgan     = require('morgan');
 var multer = require('multer');
 
 var upload = multer({dest: 'uploads/' });
+var matchedUpload = multer({dest: 'uploads/matched' });
 
 
 // configure app
@@ -164,6 +165,7 @@ router.route('/bears/:bear_id')
       personCase.recordCreated = req.body.recordCreated;
       personCase.imageName = '';
       personCase.added = '';
+      personCase.matchedImages = [];
 
       console.log(personCase)
 
@@ -226,6 +228,51 @@ router.route('/bears/:bear_id')
     })
 
 
+    // Update case reference with multiple matched Images -------------------------------
+
+      router.route('/cases/:reference/matchedImages')
+
+        .get(function(req, res) {
+          Case.findById(req.params.reference, function(err, aCase) {
+            if (err)
+              res.send(err);
+            res.json(aCase);
+          });
+        })
+
+        .post(matchedUpload.array('photos', 12), function(req, res, next) {
+
+          Case.findById(req.params.reference, function(err, aCase) {
+            if (err)
+               res.send(err);
+
+               console.log(aCase)
+               var existingMatchedImages = [];
+                if(aCase.matchedImages){
+                  existingMatchedImages = aCase.matchedImages;
+                  console.log('existing array', existingMatchedImages)
+                }
+
+               var image = {
+                 path: 'https://sheltered-headland-81365.herokuapp.com/' + req.files[0].path,
+                 dateAdded: new Date().getTime()
+               }
+
+               console.log(image);
+
+               existingMatchedImages.push(image);
+               console.log('updated array:  ', existingMatchedImages)
+               aCase.matchedImages = existingMatchedImages;
+
+              aCase.save(function(err) {
+                if (err)
+                  res.send(err);
+                  res.json({ message: 'Case Updated with missing person image!' });
+              });
+          });
+        })
+
+
   //POST A 'DATE' AS JSON AND YOU WILL GET ALL CASES AFTER THAT DATE
 
   router.route('/searchbydate')
@@ -243,8 +290,6 @@ router.route('/bears/:bear_id')
         console.log(aCase) // Space Ghost is a talk show host.
         res.json({ cases: aCase });
     })
-
-
   });
 
 
